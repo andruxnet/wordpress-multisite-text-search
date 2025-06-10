@@ -88,7 +88,7 @@ Search completed in 12.34 seconds.
 
 ## Performance
 
-- **Typical speed**: 10-30 seconds for 1000+ sites
+- **Typical speed**: 40-60 seconds for 700~ sites
 - **Memory usage**: Minimal (streams results, doesn't load content)
 - **Database impact**: Read-only SELECT queries only
 - **Optimization**: Uses table existence checks and prepared statements
