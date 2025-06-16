@@ -1,7 +1,7 @@
 <?php
 /**
  * WordPress Multisite Text Search Tool
- * Fast text finder across all subsites in a WordPress multisite
+ * Fast text/shortcode finder across all subsites in a WordPress multisite
  *
  * Usage: php multisite-text-search.php "search_string" [options]
  * Examples:
@@ -167,6 +167,7 @@ if (!$search_term || in_array('--help', $options) || in_array('-h', $options)) {
   echo "  --case-sensitive Case-sensitive search (default: case-insensitive)\n";
   echo "  --published-only Search only published content\n";
   echo "  --exclude=PATTERN Exclude options/meta matching pattern (supports wildcards)\n";
+  echo "  --include-revisions Include post revisions in search\n";
   echo "  --help, -h       Show this help message\n\n";
   echo "Examples:\n";
   echo "  php " . basename(__FILE__) . " \"[alpine-phototile-for-flickr\"\n";
@@ -184,6 +185,7 @@ $options_only = in_array('--options-only', $options);
 $summary_only = in_array('--summary', $options);
 $case_sensitive = in_array('--case-sensitive', $options);
 $published_only = in_array('--published-only', $options);
+$include_revisions = in_array('--include-revisions', $options);
 
 // Add common exclusions
 $exclude_patterns = array_merge($exclude_patterns, [
@@ -253,7 +255,7 @@ try {
       $check_table->execute([$posts_table]);
 
       if ($check_table->rowCount() > 0) {
-        $status_filter = $published_only ? "AND post_status = 'publish'" : "AND post_status IN ('publish', 'private', 'draft')";
+        $status_filter = $published_only ? "AND post_status = 'publish'" : "AND post_status IN ('publish', 'private', 'draft', 'inherit')";
         $posts_query = "SELECT ID, post_title, post_type, post_status, post_name FROM $posts_table WHERE post_content LIKE ? $collation $status_filter";
 
         $stmt = $pdo->prepare($posts_query);
@@ -383,4 +385,3 @@ try {
 }
 
 echo "\nSearch completed in " . number_format(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 2) . " seconds.\n";
-?>
